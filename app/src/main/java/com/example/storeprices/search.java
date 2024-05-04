@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -23,6 +25,7 @@ public class search extends AppCompatActivity {
     private static List<Item> items;
 
     private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,7 @@ public class search extends AppCompatActivity {
                 String[] parts = line.split(", ");
 
                 // Extract the individual components
-                if (parts.length >= 3) { // Ensure that there are at least three components
+                if (parts.length >= 4) { // Ensure that there are at least three components
                     String name = parts[0].trim();
                     String price = parts[1].trim();
                     String code = parts[2].trim();
@@ -103,6 +106,5 @@ public class search extends AppCompatActivity {
         // Update RecyclerView with search results
         setUpRecyclerView(searchResults);
     }
-
 
 }

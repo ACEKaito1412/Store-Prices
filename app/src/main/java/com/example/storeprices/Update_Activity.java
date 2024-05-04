@@ -2,6 +2,7 @@ package com.example.storeprices;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,11 +31,22 @@ public class Update_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
+        Intent intent = getIntent();
+        String value = intent.getStringExtra("item");
+
         itemName = findViewById(R.id.inputItemName);
         itemPrice = findViewById(R.id.inputPrice);
         itemCode = findViewById(R.id.inputCode);
 
         items = ReadFromFile();
+
+        if(value != null){
+            SearchItem(value);
+            TextInputEditText inputField = findViewById(R.id.search_input);
+            inputField.setText(value);
+        }
+
+
     }
 
     private List<Item> ReadFromFile(){
@@ -79,13 +91,11 @@ public class Update_Activity extends AppCompatActivity {
     }
 
     public void onSearchButtonClick(View view) {
-        SearchItem();
+        TextInputEditText inputField = findViewById(R.id.search_input);
+        SearchItem(inputField.getText().toString());
     }
 
-    public void SearchItem() {
-        TextInputEditText inputField = findViewById(R.id.search_input);
-        String searchText = inputField.getText().toString();
-
+    public void SearchItem(String searchText) {
         Item searchItem = new Item("Item not found.", "", "", "");
         for (Item item : items) {
             if (searchText.equalsIgnoreCase(item.getName())) {
