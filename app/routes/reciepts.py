@@ -31,7 +31,7 @@ def pay(type):
     data = request.get_json()
 
     if type == 'dept':
-        reciept_id = int(data.get('id'))
+        reciept_id = data.get('id')
         reciept = Receipt.query.get(reciept_id)
 
         if reciept:

@@ -10,7 +10,9 @@
     box-shadow: 2px 5px 0px 0px rgba(0, 0, 0, 1);
   }
 
-  .left, .right, .center{
+  .left,
+  .right,
+  .center {
     height: 440px;
   }
 
@@ -375,28 +377,30 @@
   }
 
   @media screen and (max-width: 800px) {
-    .container{
+    .container {
       height: 65vh;
     }
-    
-    .left{
+
+    .left {
       order: 3;
       margin-top: 20px;
       height: 290px;
     }
-    .center{
+
+    .center {
       order: 2;
     }
-    .right{
+
+    .right {
       order: 1;
     }
 
-    #dept-list{
+    #dept-list {
       width: 540px;
       height: 200px;
     }
 
-    .dept form input{
+    .dept form input {
       width: 555px;
     }
   }
@@ -884,8 +888,9 @@
       var selectedType = document.querySelector('input[name="type"]:checked').value;
       var userCash = document.querySelector('[name="cash"]').value || 0;
 
+      console.log(selectedType)
       if (userCash == 0) {
-        if (confirm("Are you sure you want to proceed?")) {
+        if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed?`)) {
           console.log("User confirmed");
 
           var data = {
@@ -917,31 +922,33 @@
           console.log("User canceled");
         }
       } else {
-        var data = {
-          id: dept_id,
-          items: items,
-          name: document.querySelector('[name="reciept-name"]').value,
-          cash: userCash,
-          total: parseFloat(document.querySelector(".total p").innerText),
-          change: parseFloat(document.querySelector(".change p").innerText),
-        };
+        if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed? `)) {
+          var data = {
+            id: dept_id,
+            items: items,
+            name: document.querySelector('[name="reciept-name"]').value,
+            cash: userCash,
+            total: parseFloat(document.querySelector(".total p").innerText),
+            change: parseFloat(document.querySelector(".change p").innerText),
+          };
 
-        const response = await fetch(`/reciept/pay/${current}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
+          const response = await fetch(`/reciept/pay/${current}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
 
-        const result = await response.json();
+          const result = await response.json();
 
-        if (result.status == "success") {
-          document.querySelector('[name="cash"]').value = 0
-          document.querySelector(".new-reciept #item-list").innerHTML = "";
-          document.querySelector('[name="reciept-name"]').value = "";
-          document.querySelector(".total p").innerText = "0";
-          document.querySelector(".change p").innerText = "0";
-        } else {
-          console.log(result);
+          if (result.status == "success") {
+            document.querySelector('[name="cash"]').value = 0
+            document.querySelector(".new-reciept #item-list").innerHTML = "";
+            document.querySelector('[name="reciept-name"]').value = "";
+            document.querySelector(".total p").innerText = "0";
+            document.querySelector(".change p").innerText = "0";
+          } else {
+            console.log(result);
+          }
         }
       }
     });
