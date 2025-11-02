@@ -927,6 +927,7 @@
             id: dept_id,
             items: items,
             name: document.querySelector('[name="reciept-name"]').value,
+            selected: selectedType,
             cash: userCash,
             total: parseFloat(document.querySelector(".total p").innerText),
             change: parseFloat(document.querySelector(".change p").innerText),
@@ -946,6 +947,7 @@
             document.querySelector('[name="reciept-name"]').value = "";
             document.querySelector(".total p").innerText = "0";
             document.querySelector(".change p").innerText = "0";
+            console.log(result);
           } else {
             console.log(result);
           }

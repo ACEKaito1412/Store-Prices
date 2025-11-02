@@ -30,6 +30,7 @@ def add():
 def pay(type):
     data = request.get_json()
 
+    
     if type == 'dept':
         reciept_id = data.get('id')
         reciept = Receipt.query.get(reciept_id)
@@ -52,8 +53,10 @@ def pay(type):
         s_type = data.get("selected")
         typeEnum = ReceiptTypeEnum.PAID
 
-        if s_type == ReceiptTypeEnum.GCASH:
+        if s_type == "gcash":
             typeEnum = ReceiptTypeEnum.GCASH
+
+        print(typeEnum)
 
         new_reciept = Receipt(
             user_id = current_user.id,
