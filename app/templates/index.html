@@ -441,17 +441,22 @@
 
           <div class="radio-buttons">
             <label>
-              <input type="radio" name="type" value="normal" checked>
+              <input type="radio" name="type" value="normal" onclick="showReference(false)" checked>
               <span class="radio-btn type_n">Normal</span>
             </label>
             <label>
               <input type="radio" name="type" value="gcash">
-              <span class="radio-btn type_g">G-Cash</span>
+              <span class="radio-btn type_g" onclick="showReference(true)">G-Cash</span>
             </label>
             <!-- <label>
               <input type="radio" name="choice" value="C" disabled>
               <span class="radio-btn">Dept</span>
             </label> -->
+          </div>
+
+          <div class="reciept-ctrl g-ref">
+            <label for="">Ref . </label>
+            <input type="text" name="gcash-ref" placeholder="eg. acgfeg-fgg" id="name" style="width: 160px" />
           </div>
 
           <div class="reciept-ctrl name">
@@ -549,11 +554,13 @@
       document.querySelector("#btn-reciept-add").style.display = "block";
       document.querySelector("#btn-reciept-paid").style.display = "none";
       document.querySelector(".radio-buttons").style.display = "none";
+      document.querySelector(".g-ref").style.display = "none";
     } else {
       document.querySelector(".radio-buttons").style.display = "flex";
       document.querySelector('input[name="type"][value="normal"]').checked = true;
       document.querySelector("#btn-reciept-upt").style.display = "none";
       document.querySelector("#btn-reciept-add").style.display = "none";
+      document.querySelector(".g-ref").style.display = "none";
       name.style.display = "none";
       cash.style.display = "flex";
       change.style.display = "flex";
@@ -767,6 +774,15 @@
     return JSON.stringify(data);
   }
 
+  function showReference(state){
+    var cnt = document.querySelector(".g-ref");
+    if (state){
+      cnt.style.display = "flex"
+    }else{
+      cnt.style.display = "none"
+    }
+  }
+
   newReciept("reciept");
 </script>
 
@@ -887,8 +903,7 @@
 
       var selectedType = document.querySelector('input[name="type"]:checked').value;
       var userCash = document.querySelector('[name="cash"]').value || 0;
-
-      console.log(selectedType)
+      
       if (userCash == 0) {
         if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed?`)) {
           console.log("User confirmed");
@@ -923,10 +938,18 @@
         }
       } else {
         if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed? `)) {
+          var name = "";
+
+          if (selectedType == 'gcash'){
+            name = document.querySelector('[name="gcash-ref"]').value;
+          }else{
+            name = document.querySelector('[name="reciept-name"]').value;
+          }
+
           var data = {
             id: dept_id,
             items: items,
-            name: document.querySelector('[name="reciept-name"]').value,
+            name: name,
             selected: selectedType,
             cash: userCash,
             total: parseFloat(document.querySelector(".total p").innerText),
@@ -945,6 +968,7 @@
             document.querySelector('[name="cash"]').value = 0
             document.querySelector(".new-reciept #item-list").innerHTML = "";
             document.querySelector('[name="reciept-name"]').value = "";
+            document.querySelector('[name="gcash-ref"]').value = "";
             document.querySelector(".total p").innerText = "0";
             document.querySelector(".change p").innerText = "0";
             console.log(result);
@@ -1006,5 +1030,7 @@
     document.querySelector("#btn-reciept-paid").style.display = "block";
 
   }
+
+
 </script>
 {% endblock %}

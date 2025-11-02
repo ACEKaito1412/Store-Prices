@@ -149,6 +149,7 @@ def receipt():
     for receipt in res:
             receipt_dict = {
                 "id": receipt.id,
+                "type" : ReceiptTypeEnum(receipt.type).value,
                 "name": receipt.name,
                 "items": json.loads(receipt.items),  # parse JSON here
                 "total": receipt.total,

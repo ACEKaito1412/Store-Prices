@@ -177,6 +177,11 @@
                 <div class="receipt-card" onclick="showItem('items-{{receipt.id}}')">
                     <div class="receipt-header">
                         <p><strong>ID:</strong> {{ receipt.id }}</p>
+                        {% if receipt.type == 'gcash' %}
+                        <p>ref: {{ receipt.name }}</p>
+                        {% else %}
+                        <p>- - - - -</p>
+                        {% endif %}
                         <p>{{ receipt.updated_date.strftime('%Y-%m-%d') if receipt.updated_date else '' }}</p>
                     </div>
 
