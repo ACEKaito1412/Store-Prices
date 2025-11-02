@@ -1,0 +1,16 @@
+{% if not dept_data : %}
+<div class="list-item">
+    <h5>No item found.</h5>
+</div>  
+{% else %}
+    {% for item in dept_data :%}
+     <div class="list-item" onclick="onDeptClick('{{item.id}}', '{{item.name}}')">
+          <h5>{{item.name}}</h5>
+          <div class="list-total">
+            <p>Total .</p>
+            <p>{{item.total}}</p>
+          </div>
+        </div>
+    {% endfor %}
+{% endif %}
+

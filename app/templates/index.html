@@ -1,0 +1,1001 @@
+{%extends "base.html" %} {% block content %}
+<style>
+  /* Utang Items */
+  .left,
+  .items,
+  .new-reciept {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 2px 5px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .left, .right, .center{
+    height: 440px;
+  }
+
+  .new-reciept {
+    position: relative;
+  }
+
+  .title {
+    text-transform: uppercase;
+    position: absolute;
+    border: 1px solid black;
+    background: white;
+    padding: 5px 10px;
+    box-shadow: 3px 5px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  #action-title {
+    bottom: -23px;
+    rotate: -10deg;
+    right: 0px;
+  }
+
+  #dept-title {
+    rotate: 5deg;
+    top: -50px;
+    width: 120px;
+    text-align: center;
+  }
+
+  #dept-list {
+    width: 250px;
+    height: 350px;
+  }
+
+  .dept {
+    position: relative;
+    margin-top: 20px;
+  }
+
+  .dept input {
+    border: 1px solid black;
+    width: 265px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
+  }
+
+  .list {
+    padding: 8px;
+    border-radius: 5px;
+    background: rgb(192, 172, 172);
+  }
+
+  .list-item {
+    display: flex;
+    padding: 5px 10px;
+    border: 1px solid black;
+    margin-bottom: 5px;
+    justify-content: space-between;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #38b6ff;
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .list-item p {
+    font-size: 13px;
+  }
+
+  .list-total {
+    width: 100px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* items */
+  .center {
+    width: 288px;
+  }
+
+  .items input {
+    border: 1px solid black;
+    width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
+  }
+
+  .list-price {
+    display: flex;
+    width: 80px;
+  }
+
+  .items {
+    margin-top: 10px;
+    width: 250px;
+  }
+
+  #item-result {
+    width: 235px;
+    height: 225px;
+    overflow-y: scroll;
+    direction: rtl;
+  }
+
+  #item-result>* {
+    direction: ltr;
+  }
+
+  /* add new */
+  .action-list {
+    padding: 0px 10px 0px 10px;
+    margin-bottom: 40px;
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    justify-content: center;
+    width: 250px;
+    gap: 10px;
+  }
+
+  .action-list a {
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    border: 1px solid black;
+    width: 100px;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.75);
+    background-color: rgba(128, 128, 128, 0.101);
+  }
+
+  .action-item {
+    width: 110px;
+    padding: 5px;
+    font-weight: bold;
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.75);
+  }
+</style>
+<style>
+  .new-item {
+    position: relative;
+    display: flex;
+    flex-flow: column wrap;
+    margin-bottom: 20px;
+  }
+
+  .new-item #item-title {
+    position: absolute;
+    top: -20px;
+    left: 10px;
+  }
+
+  .new-item form {
+    display: flex;
+    flex-flow: column wrap;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 2px 5px 0px 0px rgba(0, 0, 0, 0.75);
+  }
+
+  .new-item input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+    border-radius: 10px;
+    padding: 10px;
+    background: rgb(105, 105, 167);
+    font-weight: bold;
+    color: black;
+  }
+
+  .new-item input::placeholder {
+    color: white;
+  }
+
+  .item-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .item-action button {
+    border: 1px solid black;
+    box-shadow: 2px 5px 0px 0px rgba(0, 0, 0, 0.75);
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-left: 10px;
+  }
+
+  .new-reciept h4 {
+    top: -20px;
+  }
+
+  .item-list {
+    padding: 5px;
+    background: rgb(192, 172, 172);
+    border-radius: 5px;
+    width: 257px;
+    height: 280px;
+    margin-top: 20px;
+    overflow-y: scroll;
+  }
+
+  .reciept-item {
+    margin-bottom: 5px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #ffbd59;
+    box-shadow: 1px 2px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .item-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 140px;
+  }
+
+  .reciept-item p {
+    font-size: 15px;
+  }
+
+  .reciept-btn {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    width: 70px;
+    justify-content: space-between;
+  }
+
+  .reciept-btn button {
+    border: none;
+    font-weight: bolder;
+    background: none;
+    font-size: 20px;
+    margin-right: 5px;
+  }
+
+  .reciept-form input {
+    margin-top: 10px;
+    border: 1px solid black;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 10px;
+    background: #38b6ff;
+    font-weight: bold;
+    color: black;
+  }
+
+  .reciept-form input::placeholder {
+    color: white;
+  }
+
+  .reciept-ctrl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .reciept-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .total,
+  .change {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cash-style {
+    width: 50px;
+    background: none;
+    border: 1px solid black;
+    text-align: center;
+    border-radius: 0px;
+  }
+
+  input[name="cash_"]:focus {
+    background-color: rgba(255, 255, 255, 0.452);
+    border: 1px solid black;
+    box-shadow: none;
+    outline: none;
+  }
+</style>
+<style>
+  .radio-buttons {
+    margin-top: 5px;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Hide native radio */
+  .radio-buttons input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  /* Button style */
+  .radio-btn {
+    display: inline-block;
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background: #f9f9f9;
+    color: #333;
+    font-size: 12px;
+    color: rgb(184, 171, 171);
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  .type_n {
+    background: green;
+  }
+
+  .type_g {
+    background: #007bff;
+  }
+
+  /* Hover */
+  .radio-btn:hover {
+    background: lightsalmon;
+    color: black;
+  }
+
+  /* Selected state */
+  input[type="radio"]:checked+.radio-btn {
+    color: white;
+    box-shadow: 2px 4px 0px 0px rgba(0, 0, 0, 1);
+  }
+
+  /* Disabled state */
+  input[type="radio"]:disabled+.radio-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media screen and (max-width: 800px) {
+    .container{
+      height: 65vh;
+    }
+    
+    .left{
+      order: 3;
+      margin-top: 20px;
+      height: 290px;
+    }
+    .center{
+      order: 2;
+    }
+    .right{
+      order: 1;
+    }
+
+    #dept-list{
+      width: 540px;
+      height: 200px;
+    }
+
+    .dept form input{
+      width: 555px;
+    }
+  }
+</style>
+<div class="container">
+  <div class="left">
+    <div class="dept">
+      <h3 id="dept-title" class="title">Utang-List</h3>
+      <form hx-get="{{ url_for('item.search') }}" hx-target="#item-result" hx-trigger="keyup changed delay:300ms">
+        <input type="text" name="name" placeholder="Name" />
+      </form>
+
+      <div id="dept-list" class="list">{% include "_dept_list.html" %}</div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div id="new-item" class="new-item" style="display: none">
+      <h4 id="item-title" class="title">New Item</h4>
+      <form action="">
+        <input type="text" name="item-id" style="display: none" />
+        <label for="" style="margin-top: 10px">Item Name</label>
+        <input type="text" name="item-name" placeholder="New Item" />
+        <label for="">Price</label>
+        <input style="width: 100px" type="number" name="item-price" placeholder="eg. 100" />
+      </form>
+      <div class="item-action">
+        <button id="btn-item-add">Add</button>
+        <button id="btn-item-upt">Update</button>
+        <button id="btn-item-delete">Delete</button>
+      </div>
+    </div>
+    <div id="new-reciept">
+      <div class="new-reciept">
+        <h4 class="title">Reciept</h4>
+        <div id="item-list" class="item-list"></div>
+        <div class="reciept-form">
+
+          <div class="radio-buttons">
+            <label>
+              <input type="radio" name="type" value="normal" checked>
+              <span class="radio-btn type_n">Normal</span>
+            </label>
+            <label>
+              <input type="radio" name="type" value="gcash">
+              <span class="radio-btn type_g">G-Cash</span>
+            </label>
+            <!-- <label>
+              <input type="radio" name="choice" value="C" disabled>
+              <span class="radio-btn">Dept</span>
+            </label> -->
+          </div>
+
+          <div class="reciept-ctrl name">
+            <label for="">Name . </label>
+            <input type="text" name="reciept-name" placeholder="Mng. Lorna" id="name" style="width: 160px" />
+          </div>
+          <div class="reciept-ctrl cash">
+            <label for="">Cash .</label>
+            <input type="number" name="cash" placeholder="eg. 100" id="cash" style="width: 100px"
+              onkeydown="updateReciept()" />
+          </div>
+        </div>
+        <div style="border: 2px solid black; margin-top: 5px; margin-bottom: 5px"></div>
+        <div class="total">
+          <h3>Total</h3>
+          <p>0</p>
+        </div>
+        <div class="change">
+          <h4>Change</h4>
+          <p>0</p>
+        </div>
+      </div>
+      <div class="item-action">
+        <button id="btn-reciept-add">Add</button>
+        <button id="btn-reciept-upt">Update</button>
+        <button id="btn-reciept-paid">Paid</button>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="action-list">
+      <a class="action-item" href="{{url_for('index.logout')}}">Log-out</a>
+      <a class="action-item" href="{{url_for('index.receipt')}}">History</a>
+      <button class="action-item" onclick="newProduct()">Product</button>
+      <button class="action-item" onclick="newReciept('reciept')">
+        Reciept
+      </button>
+      <button class="action-item" onclick="newReciept('dept')">Utang</button>
+      <h4 id="action-title" class="title">Actions</h4>
+    </div>
+    <div class="items">
+      <form hx-get="{{ url_for('item.search') }}" hx-target="#item-result" hx-trigger="keyup changed delay:300ms">
+        <input type="text" name="item" placeholder="Item Name" />
+      </form>
+
+      <div id="item-result" class="list">{% include "_items_list.html" %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- RECIEPTS -->
+<script>
+  const input = document.querySelector("#cash");
+  var current = "";
+  var dept_id;
+
+  input.addEventListener("change", () => {
+    updateReciept();
+  });
+
+  function newProduct() {
+    current = "new-item";
+
+    var newItem = document.querySelector("#new-item");
+    var newReciept = document.querySelector("#new-reciept");
+
+    newItem.style.display = "flex";
+    newReciept.style.display = "none";
+  }
+
+  function newReciept(type) {
+    current = type;
+    dept_id = NaN;
+    document.querySelector("#item-list").innerHTML = "";
+    document.querySelector(".new-reciept .title").innerText = type;
+
+    var newItem = document.querySelector("#new-item");
+    var newReciept = document.querySelector("#new-reciept");
+
+    var name = document.querySelector(".name");
+    var cash = document.querySelector(".cash");
+    var total = document.querySelector(".total");
+    var change = document.querySelector(".change");
+
+    newItem.style.display = "none";
+    newReciept.style.display = "block";
+
+    document.querySelector("#btn-reciept-paid").style.display = "block";
+
+    if (type == "dept") {
+      name.style.display = "flex";
+      cash.style.display = "flex";
+      change.style.display = "flex";
+      document.querySelector("#btn-reciept-upt").style.display = "none";
+      document.querySelector("#btn-reciept-add").style.display = "block";
+      document.querySelector("#btn-reciept-paid").style.display = "none";
+      document.querySelector(".radio-buttons").style.display = "none";
+    } else {
+      document.querySelector(".radio-buttons").style.display = "flex";
+      document.querySelector('input[name="type"][value="normal"]').checked = true;
+      document.querySelector("#btn-reciept-upt").style.display = "none";
+      document.querySelector("#btn-reciept-add").style.display = "none";
+      name.style.display = "none";
+      cash.style.display = "flex";
+      change.style.display = "flex";
+    }
+
+    document.querySelector(".total p").innerText = "0";
+    document.querySelector(".change p").innerText = "0";
+  }
+
+  function addOnReciept(name, price) {
+    var item = document.querySelector(".item-list");
+
+    var items = document.querySelectorAll(".item-details h5");
+    var counts = document.querySelectorAll(".reciept-btn p");
+
+    var state = false;
+
+    if (items.length > 0) {
+      items.forEach((item, index) => {
+        if (name == item.innerText) {
+          if (name != "Cash") {
+            var x = counts[index].innerText;
+            counts[index].innerText = parseInt(x) + 1;
+          }
+          state = true;
+        }
+      });
+    }
+
+    if (!state) {
+      var randomId = generateRandomID(5);
+
+      var index = items.length + 1;
+      var recieptItem = document.createElement("div");
+      var itemDetails = document.createElement("div");
+      var recieptBtn = document.createElement("div");
+      var btnContainer = document.createElement("div");
+      if (name == "Cash") {
+        var itemName = document.createElement("h4");
+        itemName.style.fontSize = "smaller";
+      } else {
+        var itemName = document.createElement("h5");
+      }
+      var price_ = document.createElement("p");
+      var count = document.createElement("p");
+      var btnAdd = document.createElement("button");
+      var btnD = document.createElement("button");
+
+      var priceInput = document.createElement("input");
+      priceInput.classList.add("cash-style");
+      priceInput.type = "number";
+      priceInput.name = "cash_";
+
+      priceInput.addEventListener("change", () => {
+        updateReciept();
+      });
+
+      recieptItem.classList.add("reciept-item");
+      recieptItem.classList.add(randomId);
+      itemDetails.classList.add("item-details");
+      recieptBtn.classList.add("reciept-btn");
+
+      itemName.innerText = name;
+      price_.innerText = price;
+      count.innerText = 1;
+
+      btnAdd.innerText = "+";
+      btnD.innerText = "-";
+      if (name != "Cash") {
+        btnAdd.onclick = () => updateItems(true, randomId);
+      }
+
+      btnD.onclick = () => updateItems(false, randomId);
+
+      itemDetails.append(itemName);
+
+      btnContainer.append(btnD);
+
+      if (name == "Cash") {
+        recieptBtn.style.justifyContent = "flex-end";
+        itemDetails.append(priceInput);
+      } else {
+        itemDetails.append(price_);
+        btnContainer.append(btnAdd);
+        recieptBtn.append(count);
+      }
+
+      recieptBtn.append(btnContainer);
+
+      recieptItem.append(itemDetails);
+      recieptItem.append(recieptBtn);
+
+      item.append(recieptItem);
+    }
+
+    updateReciept();
+  }
+
+  function updateItems(add, id) {
+    var countElem = document.querySelector(`.${id} .reciept-btn p`);
+    var recieptItem = document.querySelector(`.${id}`);
+
+    try {
+      var count = parseInt(countElem.innerText);
+
+      if (add) {
+        count += 1;
+      } else {
+        count -= 1;
+      }
+
+      if (count == 0) {
+        recieptItem.remove();
+      } else {
+        countElem.innerText = count;
+      }
+    } catch (error) {
+      recieptItem.remove();
+    }
+
+    updateReciept();
+  }
+
+  function updateReciept() {
+    const cashInput = document.querySelector("#cash");
+    const deptCashInput = document.querySelectorAll('[name="cash_"]');
+    const priceElements = document.querySelectorAll(".item-details p");
+    const countElements = document.querySelectorAll(".reciept-btn p");
+    const totalElement = document.querySelector(".total p");
+    const changeElement = document.querySelector(".change p");
+
+    // Parse input values safely
+    const cash = parseFloat(cashInput?.value) || 0;
+    var deptCash = 0;
+
+
+    deptCashInput.forEach((item) => {
+      deptCash += parseFloat(item?.value) || 0;
+    })
+
+    // Calculate total item price
+    let itemPriceTotal = 0;
+    priceElements.forEach((item, index) => {
+      const price = parseFloat(item.innerText) || 0;
+      const count = parseFloat(countElements[index]?.innerText) || 0;
+      itemPriceTotal += price * count;
+    });
+
+    // Add dept cash (if any)
+    const total = itemPriceTotal + deptCash;
+    totalElement.innerText = total.toFixed(2); // show 2 decimal places
+
+    // Calculate change only if user entered cash
+    const change = cash > 0 ? cash - total : 0;
+    changeElement.innerText = change.toFixed(2);
+  }
+
+  function itemClick(name, price, id) {
+    if (current == "new-item") {
+      document.querySelector('[name="item-price"]').value = price;
+      document.querySelector('[name="item-name"]').value = name;
+      document.querySelector('[name="item-id"]').value = id;
+    } else {
+      addOnReciept(name, price);
+    }
+  }
+
+  function generateRandomID(length) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return result;
+  }
+
+  function getAllRecieptData() {
+    const names = document.querySelectorAll(".item-details h5");
+    const prices = document.querySelectorAll(".item-details p");
+    const counts = document.querySelectorAll(".reciept-btn p");
+
+    const data = [];
+
+    var cash_ = document.querySelectorAll('[name="cash_"]');
+
+    if (cash_) {
+
+      cash_.forEach((cash) => {
+        var item = {
+          name: "Cash",
+          price: parseFloat(cash.value) || 0,
+          count: 1,
+        };
+        data.push(item);
+      });
+    }
+
+    names.forEach((name, index) => {
+      var item;
+      item = {
+        name: name.innerText,
+        price: parseFloat(prices[index].innerText) || 0,
+        count: parseInt(counts[index].innerText) || 0,
+      };
+      data.push(item);
+    });
+
+    return JSON.stringify(data);
+  }
+
+  newReciept("reciept");
+</script>
+
+<!-- EVENT LISTENER -->
+<script>
+  document
+    .getElementById("btn-item-add")
+    .addEventListener("click", async () => {
+      var name = document.querySelector('[name="item-name"]').value;
+      var price = document.querySelector('[name="item-price"]').value;
+
+      if (name == "" || price == "") {
+        alert("Data is required");
+      } else {
+        const data = {
+          name: document.querySelector('[name="item-name"]').value,
+          price: document.querySelector('[name="item-price"]').value,
+        };
+
+        const response = await fetch("/item/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.status == "success") {
+          document.querySelector('[name="item-price"]').value = "";
+          document.querySelector('[name="item-name"]').value = "";
+        } else {
+          console.log(result);
+          alert(result.message);
+        }
+      }
+    });
+
+  document
+    .getElementById("btn-item-upt")
+    .addEventListener("click", async () => {
+      const data = {
+        id: document.querySelector('[name="item-id"]').value,
+        name: document.querySelector('[name="item-name"]').value,
+        price: document.querySelector('[name="item-price"]').value,
+      };
+
+      const response = await fetch("/item/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.status == "success") {
+        document.querySelector('[name="item-price"]').value = "";
+        document.querySelector('[name="item-name"]').value = "";
+      } else {
+        console.log(result);
+      }
+    });
+
+  document
+    .getElementById("btn-item-delete")
+    .addEventListener("click", async () => {
+      var id = document.querySelector('[name="item-id"]').value;
+
+      const response = await fetch(`/item/delete/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const result = await response.json();
+
+      if (result.status == "success") {
+        document.querySelector('[name="item-name"]').value = "";
+        document.querySelector('[name="item-price"]').value = "";
+        document.querySelector('[name="item-id"]').value = "";
+      } else {
+        console.log(result);
+      }
+    });
+
+  document
+    .getElementById("btn-reciept-add")
+    .addEventListener("click", async () => {
+      var items = getAllRecieptData();
+      var data = {
+        items: items,
+        name: document.querySelector('[name="reciept-name"]').value,
+        cash: parseFloat(document.querySelector('[name="cash"]')) || 0,
+        total: parseFloat(document.querySelector(".total p").innerText),
+        change: parseFloat(document.querySelector(".change p").innerText),
+      };
+
+      const response = await fetch(`/reciept/add/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.status == "success") {
+        document.querySelector(".new-reciept #item-list").innerHTML = "";
+        document.querySelector('[name="reciept-name"]').value = "";
+        document.querySelector(".total p").innerText = "0";
+        document.querySelector(".change p").innerText = "0";
+      } else {
+        console.log(result);
+      }
+    });
+
+  document
+    .getElementById("btn-reciept-paid")
+    .addEventListener("click", async () => {
+      var items = getAllRecieptData();
+
+      var selectedType = document.querySelector('input[name="type"]:checked').value;
+      var userCash = document.querySelector('[name="cash"]').value || 0;
+
+      if (userCash == 0) {
+        if (confirm("Are you sure you want to proceed?")) {
+          console.log("User confirmed");
+
+          var data = {
+            id: dept_id,
+            items: items,
+            name: document.querySelector('[name="reciept-name"]').value,
+            cash: userCash,
+            selected: selectedType,
+            total: parseFloat(document.querySelector(".total p").innerText),
+            change: parseFloat(document.querySelector(".change p").innerText),
+          };
+
+          const response = await fetch(`/reciept/pay/${current}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (result.status == "success") {
+            document.querySelector('[name="cash"]').value = 0
+            document.querySelector(".new-reciept #item-list").innerHTML = "";
+            document.querySelector('[name="reciept-name"]').value = "";
+          } else {
+            console.log(result);
+          }
+        } else {
+          console.log("User canceled");
+        }
+      } else {
+        var data = {
+          id: dept_id,
+          items: items,
+          name: document.querySelector('[name="reciept-name"]').value,
+          cash: userCash,
+          total: parseFloat(document.querySelector(".total p").innerText),
+          change: parseFloat(document.querySelector(".change p").innerText),
+        };
+
+        const response = await fetch(`/reciept/pay/${current}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.status == "success") {
+          document.querySelector('[name="cash"]').value = 0
+          document.querySelector(".new-reciept #item-list").innerHTML = "";
+          document.querySelector('[name="reciept-name"]').value = "";
+          document.querySelector(".total p").innerText = "0";
+          document.querySelector(".change p").innerText = "0";
+        } else {
+          console.log(result);
+        }
+      }
+    });
+
+  document
+    .getElementById("btn-reciept-upt")
+    .addEventListener("click", async () => {
+      var items = getAllRecieptData();
+      var data = {
+        id: dept_id,
+        items: items,
+        name: document.querySelector('[name="reciept-name"]').value,
+        cash: parseFloat(document.querySelector("[name='cash']").value) || 0,
+        total: parseFloat(document.querySelector(".total p").innerText),
+        change: parseFloat(document.querySelector(".change p").innerText),
+      };
+
+      const response = await fetch(`/reciept/update/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log(result.message);
+
+      if (result.status == "success") {
+        document.querySelector(".new-reciept #item-list").innerHTML = "";
+        document.querySelector('[name="reciept-name"]').value = "";
+      } else {
+        console.log(result);
+      }
+    });
+
+  async function onDeptClick(id, name) {
+    current = "dept";
+    newReciept("dept");
+
+    const response = await fetch(`/reciept/get/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const html = await response.text(); // get the rendered HTML
+
+    document.querySelector("#item-list").innerHTML = html;
+    document.querySelector('[name="reciept-name"]').value = name;
+
+    dept_id = id;
+    updateReciept();
+    document.querySelector("#btn-reciept-add").style.display = "none";
+    document.querySelector("#btn-reciept-upt").style.display = "block";
+    document.querySelector("#btn-reciept-paid").style.display = "block";
+
+  }
+</script>
+{% endblock %}

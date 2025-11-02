@@ -1,0 +1,59 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol,
+        "Noto Color Emoji";
+      }
+
+      body {
+        display: flex;
+        flex-flow: column wrap;
+        gap: 30px;
+        margin-top: 20px;
+        position: relative;
+        height: 90vh;
+      }
+
+      .container{
+        margin-top: 15px;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        justify-content: center;
+        align-content: center;
+        gap: 20px;
+        height: 80vh;
+      }
+
+      .box{
+        display: flex;
+        flex-flow: column wrap;
+        border: 1px solid black;
+        align-content: center;
+        justify-content: ce;
+        padding: 10px;
+        width: 250px;
+      }
+
+      .box form{
+        margin-top: 10px;
+        display: flex;
+        flex-flow: column wrap;
+        align-items: flex-start;
+        align-content: center;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    {% block content %} {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{%extends "base.html" %}
+{% block content %}
+<div class="box">
+  <h1>Activation</h1>
+  <!-- TODO: Use Message Flashing to display feedback to the user with a <p> -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+  <form action="{{ url_for('index.activate') }}" method="post" id="form_box">
+    <input type="text" name="code" placeholder="Code" required="required" />
+    <button type="submit" class="btn btn-primary btn-block btn-large">
+      Activate
+    </button>
+  </form>
+</div>
+{% endblock %}

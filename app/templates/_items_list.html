@@ -1,0 +1,22 @@
+<div class="list-item" onclick="itemClick('Cash', '0', '')">
+    <h5>Cash</h5>
+    <div class="list-price">
+        <p style="margin-right: 10px;">Php.</p>
+        <p>0</p>
+    </div>
+</div>
+{% if not data : %}
+<div class="list-item">
+    <h5>No item found.</h5>
+</div>  
+{% else %}
+    {% for item in data :%}
+    <div class="list-item" onclick='itemClick("{{item.name}}", "{{item.price}}", "{{item.id}}")'>
+        <h5>{{item.name}}</h5>
+        <div class="list-price">
+            <p style="margin-right: 10px;">Php.</p>
+            <p>{{item.price}}</p>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}

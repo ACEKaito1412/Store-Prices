@@ -1,0 +1,26 @@
+{% if not data_reciept : %} {% else %} {% for item in data_reciept['items'] :%}
+{% if item.name == "Cash": %}
+<div class="reciept-item Z-{{loop.index}}">
+  <div class="item-details">
+    <label id="reciept-item-id" style="display: none;">{{item.id}}</label>
+    <h4>{{item.name}}</h4>
+    <input type="number" name="cash_" class="cash-style" min="0" value="{{item.price}}">
+  </div>
+  <div class="reciept-btn" style="justify-content: flex-end;">
+    <div><button onclick="updateItems(false, 'Z-{{loop.index}}')">-</button></div>
+  </div>
+</div>
+{% else :%}
+<div class="reciept-item Z-{{loop.index}}">
+  <div class="item-details">
+    <label id="reciept-item-id" style="display: none;">{{item.id}}</label>
+    <h5>{{item.name}}</h5>
+    <p>{{item.price}}</p>
+  </div>
+  <div class="reciept-btn">
+    <p>{{item.count}}</p>
+    <div><button onclick="updateItems(false, 'Z-{{loop.index}}')">-</button><button onclick="updateItems(true, 'Z-{{loop.index}}')">+</button></div>
+  </div>
+</div>
+{%endif%}
+{% endfor %} {% endif %}
