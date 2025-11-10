@@ -154,6 +154,8 @@
                         <option value="">-- Select a receipt name --</option>
                         <option value="paid" {% if form_data['type']=='paid' %}selected{% endif %}>Paid</option>
                         <option value="un-paid" {% if form_data['type']=='un-paid' %}selected{% endif %}>Unpaid</option>
+                        <option value="cash-in" {% if form_data['type']=='cash-in' %}selected{% endif %}>Cash-In</option>
+                        <option value="cash-out" {% if form_data['type']=='cash-out' %}selected{% endif %}>Cash-Out</option>
                         <option value="gcash" {% if form_data['type']=='gcash' %}selected{% endif %}>G-Cash</option>
                     </select>
                 </div>
@@ -177,12 +179,12 @@
                 <div class="receipt-card" onclick="showItem('items-{{receipt.id}}')">
                     <div class="receipt-header">
                         <p><strong>ID:</strong> {{ receipt.id }}</p>
-                        {% if receipt.type == 'gcash' %}
+                        {% if receipt.type == 'cash-in' or receipt.type == 'cash-out' %}
                         <p>ref: {{ receipt.name }}</p>
                         {% else %}
                         <p>- - - - -</p>
                         {% endif %}
-                        <p>{{ receipt.updated_date.strftime('%Y-%m-%d') if receipt.updated_date else '' }}</p>
+                        <p>{{ receipt.updated_date.strftime('%Y-%m-%d %H:%M') if receipt.updated_date else '' }}</p>
                     </div>
 
                     <div id="items-{{receipt.id}}" class="receipt-items">

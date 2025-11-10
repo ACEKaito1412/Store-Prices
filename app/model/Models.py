@@ -10,7 +10,8 @@ class ReceiptTypeEnum(enum.Enum):
     PAID = "paid"
     UNPAID = "un-paid"
     GCASH = "gcash"
-
+    CASHIN = "cash-in"
+    CASHOUT = "cash-out"
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"

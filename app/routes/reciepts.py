@@ -30,8 +30,6 @@ def add():
 def pay(type):
     data = request.get_json()
 
-    print(data)
-    
     if type == 'dept':
         reciept_id = data.get('id')
         reciept = Receipt.query.get(reciept_id)
@@ -54,8 +52,11 @@ def pay(type):
         s_type = data.get("selected")
         typeEnum = ReceiptTypeEnum.PAID
 
-        if s_type == "gcash":
-            typeEnum = ReceiptTypeEnum.GCASH
+
+        if s_type == "cashin":
+            typeEnum = ReceiptTypeEnum.CASHIN
+        elif s_type == "cashout":
+            typeEnum = ReceiptTypeEnum.CASHOUT
 
         new_reciept = Receipt(
             user_id = current_user.id,
@@ -81,7 +82,6 @@ def update():
     try:
         reciept_id = data.get('id')
         reciept = Receipt.query.get(reciept_id)
-        print(reciept_id)
         if reciept:
             reciept.type = ReceiptTypeEnum.UNPAID
             reciept.name = data.get('name')

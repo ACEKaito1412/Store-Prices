@@ -3,7 +3,8 @@
   /* Utang Items */
   .left,
   .items,
-  .new-reciept {
+  .new-reciept,
+  .gcash-container {
     border: 1px solid black;
     padding: 10px;
     border-radius: 10px;
@@ -14,6 +15,36 @@
   .right,
   .center {
     height: 440px;
+  }
+
+  #g-cash {
+    position: relative;
+  }
+
+  .gcash-container {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 10px;
+  }
+
+  .gcash-container input {
+    border: 1px solid black;
+    width: 265px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 15px;
+  }
+
+  #gcash-title {
+    top: -23px;
+    left: 10px;
+  }
+
+  .gcash-ctrl {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 5px;
   }
 
   .new-reciept {
@@ -282,7 +313,6 @@
   }
 
   .reciept-ctrl {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
@@ -319,6 +349,7 @@
   .radio-buttons {
     margin-top: 5px;
     display: flex;
+    justify-content: center;
     gap: 0.5rem;
   }
 
@@ -348,6 +379,8 @@
     font-weight: bold;
     transition: all 0.2s ease;
     box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+    width: 114px;
+    font-size: 15px;
   }
 
   .type_n {
@@ -438,27 +471,6 @@
         <h4 class="title">Reciept</h4>
         <div id="item-list" class="item-list"></div>
         <div class="reciept-form">
-
-          <div class="radio-buttons">
-            <label>
-              <input type="radio" name="type" value="normal" onclick="showReference(false)" checked>
-              <span class="radio-btn type_n">Normal</span>
-            </label>
-            <label>
-              <input type="radio" name="type" value="gcash">
-              <span class="radio-btn type_g" onclick="showReference(true)">G-Cash</span>
-            </label>
-            <!-- <label>
-              <input type="radio" name="choice" value="C" disabled>
-              <span class="radio-btn">Dept</span>
-            </label> -->
-          </div>
-
-          <div class="reciept-ctrl g-ref">
-            <label for="">Ref . </label>
-            <input type="text" name="gcash-ref" placeholder="eg. acgfeg-fgg" id="name" style="width: 160px" />
-          </div>
-
           <div class="reciept-ctrl name">
             <label for="">Name . </label>
             <input type="text" name="reciept-name" placeholder="Mng. Lorna" id="name" style="width: 160px" />
@@ -485,6 +497,40 @@
         <button id="btn-reciept-paid">Paid</button>
       </div>
     </div>
+    <div id="g-cash">
+      <h4 id="gcash-title" class="title">G-Cash</h4>
+      <div class="gcash-container">
+        <div>
+          <label for="">Type </label>
+          <div class="radio-buttons">
+            <label>
+              <input type="radio" name="type" value="cashin" checked>
+              <span class="radio-btn type_n" onclick="typeClick('cashin')">Cash-In</span>
+            </label>
+            <label>
+              <input type="radio" name="type" value="cashout">
+              <span class="radio-btn type_g" onclick="typeClick('cashout')" >Cash-Out</span>
+            </label>
+          </div>
+        </div>
+        <div class="gcash-ctrl g-ref"  style="display: none;">
+          <label for="">Ref . </label>
+          <input type="text" name="g_ref" placeholder="eg. acgfeg-fgg" id="g_ref" />
+        </div>
+
+        <div class="gcash-ctrl cash">
+          <label for="">Cash . </label>
+          <input type="Number" name="g_cash" id="g_cash" />
+        </div>
+        <div class="gcash-ctrl charge">
+          <label for="">Charge . </label>
+          <input type="number" name="g_charge" placeholder="" id="g_charge" />
+        </div>
+      </div>
+      <div class="item-action">
+        <button id="btn-gcash-add">Add</button>
+      </div>
+    </div>
   </div>
   <div class="right">
     <div class="action-list">
@@ -495,6 +541,7 @@
         Reciept
       </button>
       <button class="action-item" onclick="newReciept('dept')">Utang</button>
+      <button class="action-item" onclick="newGcash()">G-Cash</button>
       <h4 id="action-title" class="title">Actions</h4>
     </div>
     <div class="items">
@@ -523,8 +570,16 @@
     var newItem = document.querySelector("#new-item");
     var newReciept = document.querySelector("#new-reciept");
 
+    document.querySelector("#g-cash").style.display = "none";
     newItem.style.display = "flex";
     newReciept.style.display = "none";
+  }
+
+  function newGcash() {
+    current = "gcash";
+    document.querySelector("#g-cash").style.display = "block";
+    document.querySelector("#new-item").style.display = "none";
+    document.querySelector("#new-reciept").style.display = "none";
   }
 
   function newReciept(type) {
@@ -550,17 +605,16 @@
       name.style.display = "flex";
       cash.style.display = "flex";
       change.style.display = "flex";
+      document.querySelector("#g-cash").style.display = "none";
       document.querySelector("#btn-reciept-upt").style.display = "none";
       document.querySelector("#btn-reciept-add").style.display = "block";
       document.querySelector("#btn-reciept-paid").style.display = "none";
       document.querySelector(".radio-buttons").style.display = "none";
-      document.querySelector(".g-ref").style.display = "none";
     } else {
       document.querySelector(".radio-buttons").style.display = "flex";
-      document.querySelector('input[name="type"][value="normal"]').checked = true;
+      document.querySelector("#g-cash").style.display = "none";
       document.querySelector("#btn-reciept-upt").style.display = "none";
       document.querySelector("#btn-reciept-add").style.display = "none";
-      document.querySelector(".g-ref").style.display = "none";
       name.style.display = "none";
       cash.style.display = "flex";
       change.style.display = "flex";
@@ -774,16 +828,16 @@
     return JSON.stringify(data);
   }
 
-  function showReference(state){
-    var cnt = document.querySelector(".g-ref");
-    if (state){
-      cnt.style.display = "flex"
+  function typeClick(type){
+    var g_ref = document.querySelector('.g-ref');
+    if (type == "cashin"){
+      g_ref.style.display = "none";
+      document.querySelector('[name="g_ref"]').value = "";
     }else{
-      cnt.style.display = "none"
+      g_ref.style.display = "flex";
     }
   }
-
-  newReciept("reciept");
+  newProduct();
 </script>
 
 <!-- EVENT LISTENER -->
@@ -896,24 +950,61 @@
       }
     });
 
+  document.getElementById('btn-gcash-add').addEventListener('click', async () => {
+    var selectedType = document.querySelector('input[name="type"]:checked').value;
+
+    var charge = parseFloat(document.querySelector('[name="g_charge"]').value) || 0;
+    var cash = parseFloat(document.querySelector('[name="g_cash"]').value) || 0;
+    var total = cash + charge;
+
+    var items = {
+      name: 'Charge',
+      price: charge,
+      count : 1
+    }
+
+    var data = {
+        selected : selectedType,
+        items: JSON.stringify([items]),
+        name: document.querySelector('[name="g_ref"]').value,
+        cash: cash,
+        total: total,
+        change: 0,
+      };
+
+    const response = await fetch(`/reciept/pay/${current}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.status == "success") {
+      document.querySelector('[name="g_charge"]').value = 0;
+      document.querySelector('[name="g_cash"]').value = 0;
+      document.querySelector('[name="g_ref"]').value = "";
+    } else {
+      console.log(result);
+    }
+  })
+
   document
     .getElementById("btn-reciept-paid")
     .addEventListener("click", async () => {
       var items = getAllRecieptData();
-
-      var selectedType = document.querySelector('input[name="type"]:checked').value;
       var userCash = document.querySelector('[name="cash"]').value || 0;
-      
+
       if (userCash == 0) {
-        if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed?`)) {
+        if (confirm(`Cash is zero, are you sure you wanted to proceed?`)) {
           console.log("User confirmed");
 
           var data = {
             id: dept_id,
             items: items,
+            selected : 'dept',
             name: document.querySelector('[name="reciept-name"]').value,
             cash: userCash,
-            selected: selectedType,
             total: parseFloat(document.querySelector(".total p").innerText),
             change: parseFloat(document.querySelector(".change p").innerText),
           };
@@ -937,44 +1028,35 @@
           console.log("User canceled");
         }
       } else {
-        if (confirm(`Selected Type : ${selectedType}. Are you sure you want to proceed? `)) {
-          var name = "";
+        var name = document.querySelector('[name="reciept-name"]').value;
 
-          if (selectedType == 'gcash'){
-            name = document.querySelector('[name="gcash-ref"]').value;
-          }else{
-            name = document.querySelector('[name="reciept-name"]').value;
-          }
+        var data = {
+          id: dept_id,
+          items: items,
+          selected : 'normal',
+          name: name,
+          cash: userCash,
+          total: parseFloat(document.querySelector(".total p").innerText),
+          change: parseFloat(document.querySelector(".change p").innerText),
+        };
 
-          var data = {
-            id: dept_id,
-            items: items,
-            name: name,
-            selected: selectedType,
-            cash: userCash,
-            total: parseFloat(document.querySelector(".total p").innerText),
-            change: parseFloat(document.querySelector(".change p").innerText),
-          };
+        const response = await fetch(`/reciept/pay/${current}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
 
-          const response = await fetch(`/reciept/pay/${current}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-          });
+        const result = await response.json();
 
-          const result = await response.json();
-
-          if (result.status == "success") {
-            document.querySelector('[name="cash"]').value = 0
-            document.querySelector(".new-reciept #item-list").innerHTML = "";
-            document.querySelector('[name="reciept-name"]').value = "";
-            document.querySelector('[name="gcash-ref"]').value = "";
-            document.querySelector(".total p").innerText = "0";
-            document.querySelector(".change p").innerText = "0";
-            console.log(result);
-          } else {
-            console.log(result);
-          }
+        if (result.status == "success") {
+          document.querySelector('[name="cash"]').value = 0
+          document.querySelector(".new-reciept #item-list").innerHTML = "";
+          document.querySelector('[name="reciept-name"]').value = "";
+          document.querySelector(".total p").innerText = "0";
+          document.querySelector(".change p").innerText = "0";
+          console.log(result);
+        } else {
+          console.log(result);
         }
       }
     });

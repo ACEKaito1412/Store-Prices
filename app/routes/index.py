@@ -130,12 +130,11 @@ def receipt():
         res = Receipt.query.filter(
         and_(
             Receipt.user_id == current_user.id,
-            Receipt.type == ReceiptTypeEnum(form_data['type']),
+            Receipt.type == s_type,
             Receipt.updated_date >= startDate,
             Receipt.updated_date < endDate
         )).order_by(desc(Receipt.updated_date)).all()
 
-        print(f"{startDate} : {endDate} : {s_type} : {current_user.id}")
     else:
 
         res = Receipt.query.filter(
@@ -147,17 +146,17 @@ def receipt():
 
 
     for receipt in res:
-            receipt_dict = {
-                "id": receipt.id,
-                "type" : ReceiptTypeEnum(receipt.type).value,
-                "name": receipt.name,
-                "items": json.loads(receipt.items),  # parse JSON here
-                "total": receipt.total,
-                "change": receipt.change,
-                "cash" : receipt.cash,
-                "updated_date" : receipt.updated_date.date()
-            }
-            data.append(receipt_dict)
+        receipt_dict = {
+            "id": receipt.id,
+            "type" : ReceiptTypeEnum(receipt.type).value,
+            "name": receipt.name,
+            "items": json.loads(receipt.items),  # parse JSON here
+            "total": receipt.total,
+            "change": receipt.change,
+            "cash" : receipt.cash,
+            "updated_date" : receipt.updated_date
+        }
+        data.append(receipt_dict)
 
     overallTotal = {
         'overallTotal' : sum(item['total'] for item in data),
