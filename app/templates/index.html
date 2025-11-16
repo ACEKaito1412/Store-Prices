@@ -442,10 +442,9 @@
   <div class="left">
     <div class="dept">
       <h3 id="dept-title" class="title">Utang-List</h3>
-      <form hx-get="{{ url_for('item.search') }}" hx-target="#item-result" hx-trigger="keyup changed delay:300ms">
+      <form hx-get="{{ url_for('reciept.search') }}" hx-target="#dept-list" hx-trigger="keyup changed delay:300ms">
         <input type="text" name="name" placeholder="Name" />
       </form>
-
       <div id="dept-list" class="list">{% include "_dept_list.html" %}</div>
     </div>
   </div>
@@ -509,11 +508,11 @@
             </label>
             <label>
               <input type="radio" name="type" value="cashout">
-              <span class="radio-btn type_g" onclick="typeClick('cashout')" >Cash-Out</span>
+              <span class="radio-btn type_g" onclick="typeClick('cashout')">Cash-Out</span>
             </label>
           </div>
         </div>
-        <div class="gcash-ctrl g-ref"  style="display: none;">
+        <div class="gcash-ctrl g-ref" style="display: none;">
           <label for="">Ref . </label>
           <input type="text" name="g_ref" placeholder="eg. acgfeg-fgg" id="g_ref" />
         </div>
@@ -828,12 +827,12 @@
     return JSON.stringify(data);
   }
 
-  function typeClick(type){
+  function typeClick(type) {
     var g_ref = document.querySelector('.g-ref');
-    if (type == "cashin"){
+    if (type == "cashin") {
       g_ref.style.display = "none";
       document.querySelector('[name="g_ref"]').value = "";
-    }else{
+    } else {
       g_ref.style.display = "flex";
     }
   }
@@ -957,14 +956,17 @@
     var cash = parseFloat(document.querySelector('[name="g_cash"]').value) || 0;
     var total = cash + charge;
 
-    var items = {
-      name: 'Charge',
-      price: charge,
-      count : 1
-    }
+    if (cash == 0 || charge == 0) {
+      alert('Invalid cash input.')
+    }else {
+      var items = {
+        name: 'Charge',
+        price: charge,
+        count: 1
+      }
 
-    var data = {
-        selected : selectedType,
+      var data = {
+        selected: selectedType,
         items: JSON.stringify([items]),
         name: document.querySelector('[name="g_ref"]').value,
         cash: cash,
@@ -972,21 +974,23 @@
         change: 0,
       };
 
-    const response = await fetch(`/reciept/pay/${current}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch(`/reciept/pay/${current}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.status == "success") {
-      document.querySelector('[name="g_charge"]').value = 0;
-      document.querySelector('[name="g_cash"]').value = 0;
-      document.querySelector('[name="g_ref"]').value = "";
-    } else {
-      console.log(result);
+      if (result.status == "success") {
+        document.querySelector('[name="g_charge"]').value = 0;
+        document.querySelector('[name="g_cash"]').value = 0;
+        document.querySelector('[name="g_ref"]').value = "";
+      } else {
+        console.log(result);
+      }
     }
+
   })
 
   document
@@ -996,13 +1000,13 @@
       var userCash = document.querySelector('[name="cash"]').value || 0;
 
       if (userCash == 0) {
-        if (confirm(`Cash is zero, are you sure you wanted to proceed?`)) {
+        if (prompt(`Cash is zero, please type 'confirm' :`, "Type it here") == 'confirm') {
           console.log("User confirmed");
 
           var data = {
             id: dept_id,
             items: items,
-            selected : 'dept',
+            selected: 'dept',
             name: document.querySelector('[name="reciept-name"]').value,
             cash: userCash,
             total: parseFloat(document.querySelector(".total p").innerText),
@@ -1033,31 +1037,58 @@
         var data = {
           id: dept_id,
           items: items,
-          selected : 'normal',
+          selected: 'normal',
           name: name,
           cash: userCash,
           total: parseFloat(document.querySelector(".total p").innerText),
           change: parseFloat(document.querySelector(".change p").innerText),
         };
 
-        const response = await fetch(`/reciept/pay/${current}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
+        if (current == 'dept') {
+          if (prompt("Please type 'confirm' :", "Type it here") == 'confirm') {
+            const response = await fetch(`/reciept/pay/${current}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            });
 
-        const result = await response.json();
+            const result = await response.json();
 
-        if (result.status == "success") {
-          document.querySelector('[name="cash"]').value = 0
-          document.querySelector(".new-reciept #item-list").innerHTML = "";
-          document.querySelector('[name="reciept-name"]').value = "";
-          document.querySelector(".total p").innerText = "0";
-          document.querySelector(".change p").innerText = "0";
-          console.log(result);
+            if (result.status == "success") {
+              document.querySelector('[name="cash"]').value = 0
+              document.querySelector(".new-reciept #item-list").innerHTML = "";
+              document.querySelector('[name="reciept-name"]').value = "";
+              document.querySelector(".total p").innerText = "0";
+              document.querySelector(".change p").innerText = "0";
+              console.log(result);
+            } else {
+              console.log(result);
+            }
+          } else {
+            alert('Action cancelled.')
+          }
         } else {
-          console.log(result);
+          const response = await fetch(`/reciept/pay/${current}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (result.status == "success") {
+            document.querySelector('[name="cash"]').value = 0
+            document.querySelector(".new-reciept #item-list").innerHTML = "";
+            document.querySelector('[name="reciept-name"]').value = "";
+            document.querySelector(".total p").innerText = "0";
+            document.querySelector(".change p").innerText = "0";
+            console.log(result);
+          } else {
+            console.log(result);
+          }
         }
+
+
       }
     });
 
@@ -1074,20 +1105,26 @@
         change: parseFloat(document.querySelector(".change p").innerText),
       };
 
-      const response = await fetch(`/reciept/update/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const confirm = prompt("Please type 'confirm' : Type it here ")
 
-      const result = await response.json();
-      console.log(result.message);
+      if (confirm == 'confirm' && confirm !== null) {
+        const response = await fetch(`/reciept/update/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
 
-      if (result.status == "success") {
-        document.querySelector(".new-reciept #item-list").innerHTML = "";
-        document.querySelector('[name="reciept-name"]').value = "";
+        const result = await response.json();
+        console.log(result.message);
+
+        if (result.status == "success") {
+          document.querySelector(".new-reciept #item-list").innerHTML = "";
+          document.querySelector('[name="reciept-name"]').value = "";
+        } else {
+          console.log(result);
+        }
       } else {
-        console.log(result);
+        alert('Update cancelled.')
       }
     });
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Boolean, Float, ForeignKey, Enum, DateTime
 from datetime import datetime
 import enum, uuid
-
+from zoneinfo import ZoneInfo
 
 class ReceiptTypeEnum(enum.Enum):
     PAID = "paid"
@@ -46,12 +46,23 @@ class Receipt(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     type: Mapped[ReceiptTypeEnum] = mapped_column(Enum(ReceiptTypeEnum), nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=True)
-    created_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    updated_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=True)
     items: Mapped[str] = mapped_column(String)  # JSON or serialized list of items
     total: Mapped[float] = mapped_column(Float, default=0, nullable=True)
     change: Mapped[float] = mapped_column(Float, default=0, nullable=True)
     cash: Mapped[float] = mapped_column(Float, default=0, nullable=True)
+
+
+    created_date: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Manila"))
+    )
+
+    updated_date: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Manila")),
+        onupdate=lambda: datetime.now(ZoneInfo("Asia/Manila")),
+        nullable=True
+    )
 
     # Relationship back to user
     user = relationship("User", back_populates="receipts")

@@ -2,6 +2,7 @@ from flask import Blueprint, request, redirect, url_for, jsonify, render_templat
 from flask_login import current_user
 from app.model.Models import Receipt, ReceiptTypeEnum
 from app import db
+from sqlalchemy import and_
 import json
 
 reciept_bp = Blueprint('reciept', __name__)
@@ -131,3 +132,23 @@ def get(id):
     }
 
     return render_template('_reciept_items.html', data_reciept = data)
+
+@reciept_bp.route("/search", methods=["GET"])
+def search():
+    q = request.args.get("name", "").lower()
+
+    print(q)
+
+    if q == "" or q == " ":
+        res = Receipt.query.filter(
+            and_(Receipt.user_id == current_user.id,
+                 Receipt.type == ReceiptTypeEnum.UNPAID)
+            ).all()
+    else:   
+        res = Receipt.query.filter(
+            and_(Receipt.user_id == current_user.id, 
+                 Receipt.name.ilike(f"%{q}%"),
+                 Receipt.type == ReceiptTypeEnum.UNPAID)
+            ).all()
+    print(res)
+    return render_template("_dept_list.html", dept_data = res)

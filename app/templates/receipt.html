@@ -179,8 +179,8 @@
                 <div class="receipt-card" onclick="showItem('items-{{receipt.id}}')">
                     <div class="receipt-header">
                         <p><strong>ID:</strong> {{ receipt.id }}</p>
-                        {% if receipt.type == 'cash-in' or receipt.type == 'cash-out' %}
-                        <p>ref: {{ receipt.name }}</p>
+                        {% if receipt.name != ''%}
+                        <p>{{ receipt.name }}</p>
                         {% else %}
                         <p>- - - - -</p>
                         {% endif %}
